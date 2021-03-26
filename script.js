@@ -13,21 +13,21 @@ function makePageForEpisodes(episodeList) {
 
   episodeList.map((episode) => {
     const episodeCard = document.createElement("div");
-    episodeCard.className = "col-sm-3 text-white bg-dark m-2";
+    episodeCard.className = "col-sm-3 text-#f7f7f7 bg-dark m-2";
     const episodeImage = document.createElement("img");
-    episodeImage.className = "card-img-top mt-3";
+    episodeImage.className = "card-img w-75 mx-auto d-block mt-4";
     episodeImage.src = episode.image.medium;
     episodeCard.appendChild(episodeImage);
     
     const cardBody = document.createElement("div");
     cardBody.className = "card-body";
     const episodeHeader = document.createElement("h5");
-    episodeHeader.className = "card-title";
-    episodeHeader.innerHTML = `${episode.name}: S0${episode.season}E0${episode.number}`;
+    episodeHeader.className = "card-title text-center";
+    episodeHeader.innerHTML = `S0${episode.season}E0${episode.number}: ${episode.name}`;
     cardBody.appendChild(episodeHeader);
 
     const episodeSummary = document.createElement("p");
-    episodeSummary.className = "card-text";
+    episodeSummary.className = "card-text text-justify";
     episodeSummary.innerHTML = episode.summary;
     cardBody.appendChild(episodeSummary);
 
