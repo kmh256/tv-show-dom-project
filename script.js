@@ -6,10 +6,14 @@ function setup() {
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
+  const searchForm = document.querySelector("form");
   const cardDeck = document.createElement("div");
   cardDeck.className = "card-deck justify-content-around";
   
-  rootElem.textContent = `Got ${episodeList.length} episode(s)`;
+  let episodeCounter = document.createElement("div");
+  episodeCounter.textContent = `Got ${episodeList.length} episode(s)`;
+  episodeCounter.className = "col-auto";
+  searchForm.appendChild(episodeCounter);
 
   episodeList.map((episode) => {
     const episodeCard = document.createElement("div");
