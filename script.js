@@ -6,29 +6,43 @@ function setup() {
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
-  const searchForm = document.querySelector("form");
+  const navForm = document.querySelector("form");
   const selectTag = document.createElement("select");
+
+  // All episodes selector
+  const allEpisodes = document.createElement("option");
+  allEpisodes.innerText = "All Episodes";
+  selectTag.appendChild(allEpisodes);
+
   const cardDeck = document.createElement("div");
   cardDeck.className = "card-deck justify-content-around";
-
-  function episodeSelection() {
-  }
   
   // Counts number of episodes
   let episodeCounter = document.createElement("div");
   episodeCounter.textContent = `Displaying ${episodeList.length} episode(s)`;
   episodeCounter.className = "col-auto";
-  searchForm.appendChild(episodeCounter);
+  navForm.appendChild(episodeCounter);
 
   episodeList.map((episode) => {
 
     let optionTag = document.createElement("option");
-    console.log(optionTag.value = episode.id);
-    optionTag.innerText = `S0${episode.season}E0${episode.number}: ${episode.name}`;
+    optionTag.value = episode.id;
+    let episodeSeason = episode.season;
+    let episodeNumber = episode.number;
+    if (episode.season <= 9) {
+      episodeSeason = `0${episode.season}`;
+    }
+    if (episode.number <= 9) {
+      episodeNumber = `0${episode.number}`;
+    }
+    optionTag.innerText = `S${episodeSeason}E${episodeNumber}: ${episode.name}`;
     selectTag.appendChild(optionTag);
     selectTag.className = "form-control w-25";
     selectTag.addEventListener("click", episodeSelection);
-    searchForm.appendChild(selectTag);
+    navForm.appendChild(selectTag);
+    function episodeSelection() {
+      console.log(optionTag.value);
+    }
 
     // Creates card for each episode with medium image at the top
     const episodeCard = document.createElement("div");
@@ -43,7 +57,7 @@ function makePageForEpisodes(episodeList) {
     cardBody.className = "card-body";
     const episodeHeader = document.createElement("h5");
     episodeHeader.className = "card-title text-center";
-    episodeHeader.innerHTML = `S0${episode.season}E0${episode.number}: ${episode.name}`;
+    episodeHeader.innerHTML = `S${episodeSeason}E${episodeNumber}: ${episode.name}`;
     cardBody.appendChild(episodeHeader);
 
     // Creates paragraph for episode summary
