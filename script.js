@@ -11,11 +11,17 @@ function makePageForEpisodes(episodeList) {
   const cardDeck = document.createElement("div");
   cardDeck.className = "card-deck justify-content-around";
 
+  // Search Button
+  // const searchButton = document.querySelector("button");
+  // searchButton.addEventListener("click", runSearch());
+
+
+
   // All episodes selector
-  const allEpisodes = document.createElement("option");
-  allEpisodes.innerText = "All Episodes";
-  allEpisodes.value = "0";
-  selectTag.appendChild(allEpisodes);
+  const selectAllEpisodes = document.createElement("option");
+  selectAllEpisodes.innerText = "All Episodes";
+  selectAllEpisodes.value = "0";
+  selectTag.appendChild(selectAllEpisodes);
   
   // Counts number of episodes
   let episodeCounter = document.createElement("div");
@@ -40,7 +46,7 @@ function makePageForEpisodes(episodeList) {
     selectTag.className = "form-control w-25";
     selectTag.addEventListener("click", episodeSelection);
     navForm.appendChild(selectTag);
-    allEpisodes.addEventListener("click", episodeSelection);
+    selectAllEpisodes.addEventListener("click", episodeSelection);
 
     // Hides all episode cards and displays only the episode selected
     function episodeSelection() {
