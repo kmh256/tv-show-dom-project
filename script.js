@@ -2,32 +2,34 @@
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
+}
 
+function makePageForEpisodes(allEpisodes) {
+  const rootElem = document.getElementById("root");
+  const navForm = document.querySelector("form");
+  const cardDeck = document.createElement("div");
+  cardDeck.className = "card-deck justify-content-around";
+
+  // All episodes selector
+  const selectTag = document.createElement("select");
+  const selectAllEpisodes = document.createElement("option");
+  selectAllEpisodes.innerText = "All Episodes";
+  selectAllEpisodes.value = "0";
+  selectTag.appendChild(selectAllEpisodes);
+
+  // Search bar
   const searchBar = document.getElementById("searchBar");
   searchBar.addEventListener(`keyup`, (event) => {
     const searchString = event.target.value.toLowerCase();
     const filteredEpisodes = allEpisodes.filter(episode => {
       return episode.name.toLowerCase().includes(searchString) ||
       episode.summary.toLowerCase().includes(searchString)
-    });
+  });
     console.log(filteredEpisodes);
+    episodeCounter.textContent = `Displaying ${filteredEpisodes.length}/73 episode(s)`;
   })
-}
 
-function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
-  const navForm = document.querySelector("form");
-  const selectTag = document.createElement("select");
-  const cardDeck = document.createElement("div");
-  cardDeck.className = "card-deck justify-content-around";
-
-  // All episodes selector
-  const selectAllEpisodes = document.createElement("option");
-  selectAllEpisodes.innerText = "All Episodes";
-  selectAllEpisodes.value = "0";
-  selectTag.appendChild(selectAllEpisodes);
-
-  episodeList.map((episode) => {
+  allEpisodes.map((episode) => {
 
     let optionTag = document.createElement("option");
     optionTag.value = episode.id;
@@ -56,13 +58,13 @@ function makePageForEpisodes(episodeList) {
       // Displays all cards when "All Episodes" selected
       if (selectTag.value === "0") {
         episodeCard.style.display = "block";
-        episodeCounter.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
+        episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
       }
     }
 
     // Creates card for each episode with medium image at the top
     const episodeCard = document.createElement("div");
-    episodeCard.className = "col-sm-3 text-#f7f7f7 bg-dark m-2";
+    episodeCard.className = "episode-card col-sm-3 text-#f7f7f7 bg-dark m-2";
     const episodeImage = document.createElement("img");
     episodeImage.className = "card-img w-75 mx-auto d-block mt-4";
     episodeImage.src = episode.image.medium;
@@ -90,9 +92,10 @@ function makePageForEpisodes(episodeList) {
 
   // Counts number of episodes
   let episodeCounter = document.createElement("div");
-  episodeCounter.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
+  episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
   episodeCounter.className = "col-auto";
   navForm.appendChild(episodeCounter);
+
 
 }
 
