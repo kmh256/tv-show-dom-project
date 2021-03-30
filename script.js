@@ -27,6 +27,7 @@ function makePageForEpisodes(allEpisodes) {
   });
     console.log(filteredEpisodes);
     episodeCounter.textContent = `Displaying ${filteredEpisodes.length}/73 episode(s)`;
+    
   })
 
   allEpisodes.map((episode) => {
@@ -43,7 +44,7 @@ function makePageForEpisodes(allEpisodes) {
     }
     optionTag.innerText = `S${episodeSeason}E${episodeNumber}: ${episode.name}`;
     selectTag.appendChild(optionTag);
-    selectTag.className = "form-control w-25";
+    selectTag.className = "form-control col-4";
     selectTag.addEventListener("click", episodeSelection);
     navForm.appendChild(selectTag);
     selectAllEpisodes.addEventListener("click", episodeSelection);
@@ -88,13 +89,16 @@ function makePageForEpisodes(allEpisodes) {
     cardDeck.appendChild(episodeCard);
     rootElem.appendChild(cardDeck);
 
+    console.log(episodeCard);
+
   })
 
   // Counts number of episodes
-  let episodeCounter = document.createElement("div");
+  let episodeCounter = document.createElement("h4");
   episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
-  episodeCounter.className = "col-auto";
+  episodeCounter.className = "col-4 text-center";
   navForm.appendChild(episodeCounter);
+
 
 
 }
