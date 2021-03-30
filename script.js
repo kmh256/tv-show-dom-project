@@ -2,6 +2,16 @@
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
+
+  const searchBar = document.getElementById("searchBar");
+  searchBar.addEventListener(`keyup`, (event) => {
+    const searchString = event.target.value.toLowerCase();
+    const filteredEpisodes = allEpisodes.filter(episode => {
+      return episode.name.toLowerCase().includes(searchString) ||
+      episode.summary.toLowerCase().includes(searchString)
+    });
+    console.log(filteredEpisodes);
+  })
 }
 
 function makePageForEpisodes(episodeList) {
@@ -11,23 +21,11 @@ function makePageForEpisodes(episodeList) {
   const cardDeck = document.createElement("div");
   cardDeck.className = "card-deck justify-content-around";
 
-  // Search Button
-  // const searchButton = document.querySelector("button");
-  // searchButton.addEventListener("click", runSearch());
-
-
-
   // All episodes selector
   const selectAllEpisodes = document.createElement("option");
   selectAllEpisodes.innerText = "All Episodes";
   selectAllEpisodes.value = "0";
   selectTag.appendChild(selectAllEpisodes);
-  
-  // Counts number of episodes
-  let episodeCounter = document.createElement("div");
-  episodeCounter.textContent = `Displaying ${episodeList.length} episode(s)`;
-  episodeCounter.className = "col-auto";
-  navForm.appendChild(episodeCounter);
 
   episodeList.map((episode) => {
 
@@ -53,10 +51,12 @@ function makePageForEpisodes(episodeList) {
       episodeCard.style.display = "none";
       if (optionTag.value === selectTag.value) {
         episodeCard.style.display = "block";
+        episodeCounter.textContent = `Displaying 1/73 episode(s)`;
       }
       // Displays all cards when "All Episodes" selected
       if (selectTag.value === "0") {
         episodeCard.style.display = "block";
+        episodeCounter.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
       }
     }
 
@@ -87,6 +87,13 @@ function makePageForEpisodes(episodeList) {
     rootElem.appendChild(cardDeck);
 
   })
+
+  // Counts number of episodes
+  let episodeCounter = document.createElement("div");
+  episodeCounter.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
+  episodeCounter.className = "col-auto";
+  navForm.appendChild(episodeCounter);
+
 }
 
 window.onload = setup;
