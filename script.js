@@ -1,7 +1,22 @@
 //You can edit ALL of the code here
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  // const allEpisodes = getAllEpisodes();
+  fetch('https://api.tvmaze.com/shows/82/episodes')
+  .then((response) => {
+    if (response.status >= 200 && response.status <= 299) {
+      return response.json();
+    } else {
+      throw new Error (
+        `Encountered an error: ${response.status} ${response.statusText}`
+      );
+    }
+  })
+  .then((allEpisodes) => {
+    makePageForEpisodes(allEpisodes);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 }
 
 function makePageForEpisodes(allEpisodes) {
