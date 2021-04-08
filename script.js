@@ -1,6 +1,43 @@
 //You can edit ALL of the code here
+
+// Selectors
+const rootElem = document.getElementById("root");
+const navForm = document.querySelector("form");
+
+// Gets all show information from shows.js
+const allShows = getAllShows();
+
+// All shows selectors
+const selectShowTag = document.createElement("select");
+const selectAllShows = document.createElement("option");
+selectAllShows.innerText = "All Shows";
+selectAllShows.value = "0";
+selectShowTag.appendChild(selectAllShows);
+
+// All episodes selectors
+const selectEpisodeTag = document.createElement("select");
+const selectAllEpisodes = document.createElement("option");
+selectAllEpisodes.innerText = "All Episodes";
+selectAllEpisodes.value = "0";
+selectEpisodeTag.appendChild(selectAllEpisodes);
+
 function setup() {
-  // const allEpisodes = getAllEpisodes();
+
+  allShows.map((show) => {
+    
+    let showOptionTag = document.createElement("option");
+    showOptionTag.value = show.id;
+    let showName = show.name;
+    showOptionTag.innerText = `${showName}`;
+    selectShowTag.appendChild(showOptionTag);
+    selectShowTag.className = "form-control col-3 mt-2 mb-3 mr-2";
+    // selectShowTag.addEventListener("click", showSelection);
+    navForm.appendChild(selectShowTag);
+    // selectAllShows.addEventListener("click", showSelection);
+  })
+
+  // const allEpisodes = getAllEpisodes(); - Not required now as episode information is accessed through API
+
   fetch('https://api.tvmaze.com/shows/82/episodes')
   .then((response) => {
     if (response.status >= 200 && response.status <= 299) {
@@ -20,20 +57,12 @@ function setup() {
 }
 
 function makePageForEpisodes(allEpisodes) {
-  const rootElem = document.getElementById("root");
-  const navForm = document.querySelector("form");
   const cardDeck = document.createElement("div");
   cardDeck.className = "card-deck justify-content-around";
 
-  // All episodes selector
-  const selectTag = document.createElement("select");
-  const selectAllEpisodes = document.createElement("option");
-  selectAllEpisodes.innerText = "All Episodes";
-  selectAllEpisodes.value = "0";
-  selectTag.appendChild(selectAllEpisodes);
-
   // Search bar
   const searchBar = document.getElementById("searchBar");
+  searchBar.className = "form-control col-3 ml-4 mt-2 mr-2 mb-3";
   searchBar.addEventListener("keyup", (event) => {
     const searchString = event.target.value.toLowerCase();
     const episodeCards = document.querySelectorAll(".episode-card");
@@ -52,8 +81,8 @@ function makePageForEpisodes(allEpisodes) {
 
   allEpisodes.map((episode) => {
 
-    let optionTag = document.createElement("option");
-    optionTag.value = episode.id;
+    let episodeOptionTag = document.createElement("option");
+    episodeOptionTag.value = episode.id;
     let episodeSeason = episode.season;
     let episodeNumber = episode.number;
     // Checks if episode season and number are less than or equal to 9 and applies 0 
@@ -63,22 +92,22 @@ function makePageForEpisodes(allEpisodes) {
     if (episode.number <= 9) {
       episodeNumber = `0${episode.number}`;
     }
-    optionTag.innerText = `S${episodeSeason}E${episodeNumber}: ${episode.name}`;
-    selectTag.appendChild(optionTag);
-    selectTag.className = "form-control col-4";
-    selectTag.addEventListener("click", episodeSelection);
-    navForm.appendChild(selectTag);
+    episodeOptionTag.innerText = `S${episodeSeason}E${episodeNumber}: ${episode.name}`;
+    selectEpisodeTag.appendChild(episodeOptionTag);
+    selectEpisodeTag.className = "form-control col-3 mt-2 mr-2 mb-3";
+    selectEpisodeTag.addEventListener("click", episodeSelection);
+    navForm.appendChild(selectEpisodeTag);
     selectAllEpisodes.addEventListener("click", episodeSelection);
 
     // Hides all episode cards and displays only the episode selected
     function episodeSelection() {
       episodeCard.style.display = "none";
-      if (optionTag.value === selectTag.value) {
+      if (episodeOptionTag.value === selectEpisodeTag.value) {
         episodeCard.style.display = "block";
         episodeCounter.textContent = `Displaying 1/73 episode(s)`;
       }
       // Displays all cards when "All Episodes" selected
-      if (selectTag.value === "0") {
+      if (selectEpisodeTag.value === "0") {
         episodeCard.style.display = "block";
         episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
       }
@@ -88,7 +117,7 @@ function makePageForEpisodes(allEpisodes) {
     const episodeCard = document.createElement("div");
     episodeCard.className = "episode-card col-sm-3 text-#f7f7f7 bg-dark m-2";
     const episodeImage = document.createElement("img");
-    episodeImage.className = "card-img w-75 mx-auto d-block mt-4";
+    episodeImage.className = "card-img w-75 mx-auto d-block mt-3";
     episodeImage.src = episode.image.medium;
     episodeCard.appendChild(episodeImage);
     
@@ -114,9 +143,9 @@ function makePageForEpisodes(allEpisodes) {
   })
 
   // Counts number of episodes
-  let episodeCounter = document.createElement("h4");
+  let episodeCounter = document.createElement("h5");
   episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
-  episodeCounter.className = "col-4 text-center";
+  episodeCounter.className = "ml-4 mt-1 mr-2 mb-2";
   navForm.appendChild(episodeCounter);
 }
 
