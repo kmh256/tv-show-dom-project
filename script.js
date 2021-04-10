@@ -21,44 +21,80 @@ selectAllEpisodes.innerText = "All Episodes";
 selectAllEpisodes.value = "0";
 selectEpisodeTag.appendChild(selectAllEpisodes);
 
+// Card selectors
+const cardDeck = document.createElement("div");
+cardDeck.className = "card-deck justify-content-around";
+const episodeCards = document.querySelectorAll(".episode-card");
+
+// Episode counter
+let episodeCounter = document.createElement("h5");
+
 function setup() {
 
-  allShows.map((show) => {
-    
+  let api = 'https://api.tvmaze.com/shows';
+  getDataFromApi(api);
+  let apiLink = 1;
+
+  allShows.forEach((show) => {
     let showOptionTag = document.createElement("option");
     showOptionTag.value = show.id;
     let showName = show.name;
     showOptionTag.innerText = `${showName}`;
     selectShowTag.appendChild(showOptionTag);
     selectShowTag.className = "form-control col-3 mt-2 mb-3 mr-2";
-    // selectShowTag.addEventListener("click", showSelection);
+    selectShowTag.addEventListener("click", showSelection);
     navForm.appendChild(selectShowTag);
-    // selectAllShows.addEventListener("click", showSelection);
-  })
+    selectAllShows.addEventListener("click", showSelection);
 
-  // const allEpisodes = getAllEpisodes(); - Not required now as episode information is accessed through API
-
-  fetch('https://api.tvmaze.com/shows/82/episodes')
-  .then((response) => {
-    if (response.status >= 200 && response.status <= 299) {
-      return response.json();
-    } else {
-      throw new Error (
-        `Encountered an error: ${response.status} ${response.statusText}`
-      );
+    function showSelection() {
+      if (showOptionTag.value === selectShowTag.value) {
+        apiLink = show.id;
+        api = `https://api.tvmaze.com/shows/${apiLink}/episodes`;
+        getNewDataFromApi(api);
+      }
     }
   })
-  .then((allEpisodes) => {
-    makePageForEpisodes(allEpisodes);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+
+  function getDataFromApi(api) {
+    fetch(api)
+    .then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        return response.json();
+      } else {
+        throw new Error (
+          `Encountered an error: ${response.status} ${response.statusText}`
+        );
+      }
+    })
+    .then((allEpisodes) => {
+      makePageForEpisodes(allEpisodes);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  function getNewDataFromApi(api) {
+    fetch(api)
+    .then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        return response.json();
+      } else {
+        throw new Error (
+          `Encountered an error: ${response.status} ${response.statusText}`
+        );
+      }
+    })
+    .then((allEpisodes) => {
+      makePageForEpisodes(allEpisodes);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 }
 
 function makePageForEpisodes(allEpisodes) {
-  const cardDeck = document.createElement("div");
-  cardDeck.className = "card-deck justify-content-around";
 
   // Search bar
   const searchBar = document.getElementById("searchBar");
@@ -67,6 +103,7 @@ function makePageForEpisodes(allEpisodes) {
     const searchString = event.target.value.toLowerCase();
     const episodeCards = document.querySelectorAll(".episode-card");
     let countEpisodes = 0;
+
     // Checks if each card contains the search string and if not sets display to none
     for (let i = 0; i < episodeCards.length; i++) {
       if (!episodeCards[i].innerHTML.toLowerCase().includes(searchString)) {
@@ -76,15 +113,16 @@ function makePageForEpisodes(allEpisodes) {
         countEpisodes ++;
       }
     }
-    episodeCounter.textContent = `Displaying ${countEpisodes}/73 episode(s)`;
+    episodeCounter.textContent = `Displaying ${countEpisodes}/${countEpisodes} episode(s)`;
   });
 
-  allEpisodes.map((episode) => {
+  allEpisodes.forEach((episode) => {
 
     let episodeOptionTag = document.createElement("option");
     episodeOptionTag.value = episode.id;
     let episodeSeason = episode.season;
     let episodeNumber = episode.number;
+    
     // Checks if episode season and number are less than or equal to 9 and applies 0 
     if (episode.season <= 9) {
       episodeSeason = `0${episode.season}`;
@@ -104,12 +142,12 @@ function makePageForEpisodes(allEpisodes) {
       episodeCard.style.display = "none";
       if (episodeOptionTag.value === selectEpisodeTag.value) {
         episodeCard.style.display = "block";
-        episodeCounter.textContent = `Displaying 1/73 episode(s)`;
+        episodeCounter.textContent = `Displaying 1/${allEpisodes.length} episode(s)`;
       }
       // Displays all cards when "All Episodes" selected
       if (selectEpisodeTag.value === "0") {
         episodeCard.style.display = "block";
-        episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
+        episodeCounter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episode(s)`;
       }
     }
 
@@ -141,10 +179,8 @@ function makePageForEpisodes(allEpisodes) {
     cardDeck.appendChild(episodeCard);
     rootElem.appendChild(cardDeck);
   })
-
   // Counts number of episodes
-  let episodeCounter = document.createElement("h5");
-  episodeCounter.textContent = `Displaying ${allEpisodes.length}/73 episode(s)`;
+  episodeCounter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episode(s)`;
   episodeCounter.className = "ml-4 mt-1 mr-2 mb-2";
   navForm.appendChild(episodeCounter);
 }
