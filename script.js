@@ -62,6 +62,7 @@ function setup() {
         for (let i = 0; i < allShowCards.length; i++) {
           allShowCards[i].style.display = "block";
         }
+        selectEpisodeTag.style.display = "none";
         let showCounter = document.querySelector("#counter")
         showCounter.textContent = `Displaying 240/240 show(s)`;
       }
@@ -70,6 +71,7 @@ function setup() {
         for (let i = 0; i < allShowCards.length; i++) {
           allShowCards[i].style.display = "none";
         }
+        selectEpisodeTag.style.display = "block";
         // Removes episode cards
         for (let i = 0; i < allEpisodeCards.length; i++) {
           allEpisodeCards[i].remove();
@@ -242,11 +244,14 @@ function makePageForEpisodes(allEpisodes) {
         episodeCard.style.display = "block";
         counter.textContent = `Displaying 1/${allEpisodes.length} episode(s)`;
       }
-      // Displays all cards when "All Episodes" selected
+      // Displays all episode cards when "All Episodes" selected
       if (selectEpisodeTag.value === "0") {
         episodeCard.style.display = "block";
         episodeOptionTag.id = "episode-option";
         counter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episode(s)`;
+      }
+      if (selectShowTag.value === "0") {
+        counter.textContent = `Displaying 240/240 show(s)`;
       }
     }
 
@@ -255,8 +260,10 @@ function makePageForEpisodes(allEpisodes) {
     episodeCard.className = "episode-card col-sm-3 text-#f7f7f7 bg-dark m-2";
     const episodeImage = document.createElement("img");
     episodeImage.className = "card-img w-75 mx-auto d-block mt-3";
-    episodeImage.src = episode.image.medium;
-    episodeCard.appendChild(episodeImage);
+    if (episode.image !== null) {
+      episodeImage.src = episode.image.medium;
+      episodeCard.appendChild(episodeImage);
+    }
     
     // Creates heading for card body - season, episode number & episode name
     const cardBody = document.createElement("div");
@@ -280,7 +287,6 @@ function makePageForEpisodes(allEpisodes) {
   })
   // Counts number of episodes
   counter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episode(s)`;
-  counter.className = "ml-4 mt-1 mr-2 mb-2";
   navForm.appendChild(counter);
 }
 
