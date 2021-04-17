@@ -25,16 +25,16 @@ selectEpisodeTag.appendChild(selectAllEpisodes);
 // Card selectors
 const cardDeck = document.createElement("div");
 cardDeck.className = "card-deck justify-content-around";
-const episodeCards = document.querySelectorAll(".episode-card");
 
 // Show / Episode counter
 let counter = document.createElement("h5");
 counter.id = "counter";
+counter.className = "ml-4 mt-1 mr-2 mb-2";
 
 function setup() {
 
   let api = 'https://api.tvmaze.com/shows';
-  getEpisodeFromApi(api);
+  getShowsFromApi(api);
   let apiLink = 1;
 
   allShows.forEach((show) => {
@@ -47,39 +47,41 @@ function setup() {
     selectShowTag.className = "form-control col-3 mt-2 mb-3 mr-2";
     selectShowTag.addEventListener("click", showSelection);
     navForm.appendChild(selectShowTag);
+
     selectAllShows.addEventListener("click", showSelection);
 
     function showSelection() {
       const allEpisodeCards = document.querySelectorAll(".episode-card")
       const allShowCards = document.querySelectorAll(".show-card");
 
-      // Hides show cards
+      // Hides episode cards
       for (let i = 0; i < allEpisodeCards.length; i++) {
         allEpisodeCards[i].style.display = "none";
-      }
-      // Displays all shows if All Shows is selected
-      if (selectShowTag.value === "0") {
-        for (let i = 0; i < allShowCards.length; i++) {
-          allShowCards[i].style.display = "block";
-        }
-        selectEpisodeTag.style.display = "none";
-        let showCounter = document.querySelector("#counter")
-        showCounter.textContent = `Displaying 240/240 show(s)`;
-      }
-      // Hides all Shows if episode is selected
-      if (showOptionTag.value === selectShowTag.value) {
-        for (let i = 0; i < allShowCards.length; i++) {
-          allShowCards[i].style.display = "none";
-        }
-        selectEpisodeTag.style.display = "block";
         // Removes episode cards
-        for (let i = 0; i < allEpisodeCards.length; i++) {
+        if (showOptionTag.value === selectShowTag.value) {
           allEpisodeCards[i].remove();
         }
+      }
+      // Displays all shows if All Shows is selected
+      for (let i = 0; i < allShowCards.length; i++) {
+        if (selectShowTag.value === "0") {
+          allShowCards[i].style.display = "block";
+        }
+        // Hides all Shows if episode is selected
+        if (showOptionTag.value === selectShowTag.value) {
+          allShowCards[i].style.display = "none";
+        }
+      }
+      if (selectShowTag.value === "0") {
+        selectEpisodeTag.style.display = "none";
+        counter.textContent = `Displaying ${allShows.length}/${allShows.length} show(s)`;
+      }
+      if (showOptionTag.value === selectShowTag.value) {
+        selectEpisodeTag.style.display = "block";
         // Gets episode data from API
         apiLink = show.id;
         api = `https://api.tvmaze.com/shows/${apiLink}/episodes`;
-        getShowDataFromApi(api);
+        getEpisodesFromApi(api);
       }
       // Removes episode cards
       const episodeOptions = document.querySelectorAll("#episode-option");
@@ -89,10 +91,10 @@ function setup() {
     }
   })
 
-  function getEpisodeFromApi(api) {
+  function getShowsFromApi(api) {
     fetch(api)
     .then((response) => {
-      if (response.status >= 200 && response.status <= 299) {
+      if (response.ok) {
         return response.json();
       } else {
         throw new Error (
@@ -108,10 +110,10 @@ function setup() {
     });
   }
 
-  function getShowDataFromApi(api) {
+  function getEpisodesFromApi(api) {
     fetch(api)
     .then((response) => {
-      if (response.status >= 200 && response.status <= 299) {
+      if (response.ok) {
         return response.json();
       } else {
         throw new Error (
@@ -147,7 +149,7 @@ function makePageForShows(allShows) {
         countShows ++;
       }
     }
-    counter.textContent = `Displaying ${countShows}/240 show(s)`;
+    counter.textContent = `Displaying ${countShows}/${allShows.length} show(s)`;
   });
 
   allShows.forEach((show) => {
@@ -186,11 +188,8 @@ function makePageForShows(allShows) {
     showCard.appendChild(cardBody);
     cardDeck.appendChild(showCard);
     rootElem.appendChild(cardDeck);
+
   })
-  // Counts number of shows
-  counter.textContent = `Displaying ${allShows.length}/240 show(s)`;
-  counter.className = "ml-4 mt-1 mr-2 mb-2";
-  navForm.appendChild(counter);
 }
 
 function makePageForEpisodes(allEpisodes) {
@@ -222,10 +221,11 @@ function makePageForEpisodes(allEpisodes) {
     let episodeSeason = episode.season;
     let episodeNumber = episode.number;
     
-    // Checks if episode season and number are less than or equal to 9 and applies 0 
+    // Checks if episode season is less than or equal to 9 and applies 0 
     if (episode.season <= 9) {
       episodeSeason = `0${episode.season}`;
     }
+    // Checks if episode number is less than or equal to 9 and applies 0 
     if (episode.number <= 9) {
       episodeNumber = `0${episode.number}`;
     }
@@ -251,7 +251,7 @@ function makePageForEpisodes(allEpisodes) {
         counter.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episode(s)`;
       }
       if (selectShowTag.value === "0") {
-        counter.textContent = `Displaying 240/240 show(s)`;
+        counter.textContent = `Displaying ${allShows.length}/${allShows.length} show(s)`;
       }
     }
 
